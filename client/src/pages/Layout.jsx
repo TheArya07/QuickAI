@@ -3,12 +3,12 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { Menu, X } from "lucide-react";
 import Sidebar from "../component/Sidebar";
-import { SignIn , useUser } from "@clerk/clerk-react";
+import { SignIn, useUser } from "@clerk/clerk-react";
 
 const Layout = () => {
   const navigate = useNavigate();
   const [sidebar, setSidebar] = useState(false);
-  const{user} = useUser();
+  const { user } = useUser();
 
   return user ? (
     <div className="flex flex-col h-screen">
@@ -44,18 +44,18 @@ const Layout = () => {
         <Sidebar sidebar={sidebar} setSidebar={setSidebar} />
 
         {/* RIGHT CONTENT */}
-        <div className="flex-1 bg-[#F4F7FB] p-4 overflow-auto">
-          <Outlet /> {/* PAGE CONTENT RENDERS HERE */}
+        <div className="flex-1 bg-[#F4F7FB] p-4 overflow-auto mt-14">
+          <Outlet />
         </div>
 
       </div>
 
     </div>
   ) : (
-    <div className='flex items-center justify-center h-screen'>
-     <signIn />
+    <div className="flex items-center justify-center h-screen">
+      <SignIn /> {/* FIXED */}
     </div>
-  )
-}
+  );
+};
 
 export default Layout;
