@@ -46,7 +46,9 @@ export const generateArticle = async (req, res) => {
       });
     }
 
-    res.json({ success: true, content });
+    // res.json({ success: true, content });
+    res.json({ success: false, message: error.message });
+
   } catch (error) {
     console.log("ERROR:", error);  // FIXED
     res.json({ success: false, message: error.message });  // FIXED
