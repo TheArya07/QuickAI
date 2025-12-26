@@ -21,7 +21,6 @@ const AiTools = () => {
         </p>
       </div>
 
-      {/* CORRECTED GRID */}
       <div className="flex flex-wrap mt-10 justify-center">
 
         {AiToolsData.map((tool, index) => (
@@ -40,12 +39,16 @@ const AiTools = () => {
             />
 
             <h3 className="mt-6 mb-3 text-lg font-semibold">{tool.title}</h3>
-            <p> className='text-gray-400 text-sm max-w-[95%]{tool.description}</p>
+
+            {/* FIXED LINE */}
+            <p className="text-gray-400 text-sm max-w-[95%]">
+              {tool.description}
+            </p>
+
           </div>
         ))}
 
       </div>
-
     </div>
   );
 };
