@@ -3,8 +3,8 @@ import sql from "../configs/db.js";
 import { clerkClient } from "@clerk/express";
 
 const AI = new OpenAI({
-    apiKey: process.env.GEMINI_API_KEY,
-    baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
+  apiKey: process.env.GEMINI_API_KEY,
+  baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
 });
 
 export const generateArticle = async (req, res) => {
@@ -15,7 +15,10 @@ export const generateArticle = async (req, res) => {
     const free_usage = req.free_usage;
 
     if (plan !== "premium" && free_usage >= 10) {
-      return res.json({ success: false, message: "Limit reached. Upgrade to continue" });
+      return res.json({
+        success: false,
+        message: "Limit reached. Upgrade to continue",
+      });
     }
 
     const response = await AI.chat.completions.create({
@@ -23,7 +26,7 @@ export const generateArticle = async (req, res) => {
       messages: [
         {
           role: "user",
-          content: prompt,   // FIXED
+          content: prompt,
         },
       ],
       temperature: 0.7,
@@ -32,7 +35,6 @@ export const generateArticle = async (req, res) => {
 
     const content = response.choices[0].message.content;
 
-    // FIXED SQL query
     await sql`
       INSERT INTO creations (user_id, prompt, content, type)
       VALUES (${userId}, ${prompt}, ${content}, 'article')
@@ -46,11 +48,10 @@ export const generateArticle = async (req, res) => {
       });
     }
 
-    // res.json({ success: true, content });
-    res.json({ success: false, message: error.message });
+    res.json({ success: true, content });
 
   } catch (error) {
-    console.log("ERROR:", error);  // FIXED
-    res.json({ success: false, message: error.message });  // FIXED
+    console.log("ERROR:", error);
+    res.json({ success: false, message: error.message });
   }
 };
