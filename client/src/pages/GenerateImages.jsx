@@ -30,7 +30,7 @@ const GenerateImages = () => {
         className="w-full max-w-lg p-4 bg-white rounded-lg border border-gray-200"
       >
         <div className="flex items-center gap-3">
-          <Sparkles className="w-6 text-[#00AD25]" />
+          <Sparkles className="w-6 text-[#00AD26]" />
           <h1 className="text-xl font-semibold">AI Image Generator</h1>
         </div>
 
@@ -83,7 +83,7 @@ const GenerateImages = () => {
 
         <button
           className="w-full flex justify-center items-center gap-2
-          bg-gradient-to-r from-[#00AD25] to-[#04FF50] text-white px-4 py-2 mt-6
+          bg-gradient-to-r from-[#00AD26] to-[#04FF50] text-white px-4 py-2 mt-6
           text-sm rounded-lg cursor-pointer"
         >
           <Image className="w-5" />
@@ -94,7 +94,7 @@ const GenerateImages = () => {
       {/* RIGHT COLUMN */}
       <div className="w-full max-w-lg p-4 bg-white rounded-lg flex flex-col border border-gray-200 min-h-96">
         <div className="flex items-center gap-3">
-          <Image className="w-5 h-5 text-[#00AD25]" />
+          <Image className="w-5 h-5 text-[#00AD26]" />
           <h1 className="text-xl font-semibold">Generated Image</h1>
         </div>
 
