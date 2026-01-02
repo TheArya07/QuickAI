@@ -60,6 +60,7 @@ const WriteArticle = () => {
 
     <Edit className='w-5'/>
     Generate article 
+    
   </button >
       </form>
    
