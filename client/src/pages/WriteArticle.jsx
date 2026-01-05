@@ -68,6 +68,8 @@ const WriteArticle = () => {
       <div className='w-full max-w-lg p-4 bg-white rounded-lg flex flex-col border
 
       
+
+      
       border-gray-200 min-h-96 max-h-[600px]'>
         <div className='flex items-center gap-3'>
           <Edit className='w-5 h-5 text-[#4A7AFF]' />
