@@ -69,6 +69,9 @@ const WriteArticle = () => {
 
       
 
+
+
+
       
       border-gray-200 min-h-96 max-h-[600px]'>
         <div className='flex items-center gap-3'>
