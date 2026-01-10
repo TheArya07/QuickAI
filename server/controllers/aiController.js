@@ -42,6 +42,9 @@ await new Promise(resolve => setTimeout(resolve, 1200));
     `;
 
     if (plan !== "premium") {
+
+
+      
       await clerkClient.users.updateUserMetadata(userId, {
         privateMetadata: {
           free_usage: free_usage + 1,
