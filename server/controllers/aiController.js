@@ -1,10 +1,10 @@
-import OpenAI from "openai";
+import Groq from "groq-sdk";
 import sql from "../configs/db.js";
 import { clerkClient } from "@clerk/express";
 
-const AI = new OpenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-  baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+  
 });
 
 export const generateArticle = async (req, res) => {
@@ -20,10 +20,12 @@ export const generateArticle = async (req, res) => {
         message: "Limit reached. Upgrade to continue",
       });
     }
-await new Promise(resolve => setTimeout(resolve, 1200));
 
-    const response = await AI.chat.completions.create({
-      model: "gemini-2.0-flash",
+    // keep your delay (unchanged)
+    await new Promise(resolve => setTimeout(resolve, 1200));
+
+    const response = await groq.chat.completions.create({
+      model: "llama-3.1-8b-instant",
       messages: [
         {
           role: "user",
@@ -42,9 +44,6 @@ await new Promise(resolve => setTimeout(resolve, 1200));
     `;
 
     if (plan !== "premium") {
-
-
-      
       await clerkClient.users.updateUserMetadata(userId, {
         privateMetadata: {
           free_usage: free_usage + 1,
