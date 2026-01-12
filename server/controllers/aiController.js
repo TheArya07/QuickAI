@@ -36,6 +36,9 @@ export const generateArticle = async (req, res) => {
       max_tokens: 300,
     });
 
+
+    
+
     const content = response.choices[0].message.content;
 
     await sql`
