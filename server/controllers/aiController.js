@@ -31,6 +31,12 @@ export const generateArticle = async (req, res) => {
           role: "user",
 
 
+
+
+
+          
+
+
           
           content: prompt,
         },
