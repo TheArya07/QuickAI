@@ -12,16 +12,14 @@ import RemoveObject from './pages/RemoveObject';
 import GenerateImages from './pages/GenerateImages';
 import RemoveBackground from './pages/RemoveBackground';
 import { useAuth } from '@clerk/clerk-react';
+import {Toaster} from 'react-hot-toast'
 
 const App = () => {
-  const { getToken } = useAuth();
-
-  useEffect(() => {
-    getToken().then((token) => console.log(token));
-  }, []);
+  
 
   return (
     <Routes>
+      <Toaster />
       <Route path="/" element={<Home />} />
 
       <Route path="/ai" element={<Layout />}>
