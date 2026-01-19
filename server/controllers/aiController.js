@@ -5,7 +5,10 @@ import { v2 as cloudinary } from "cloudinary";
 import axios from "axios";
 import FormData from "form-data";
 import fs from "fs";
-import pdfParse from "pdf-parse";   // ✅ FIXED — Correct import
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
+const pdfParse = require("pdf-parse");
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
