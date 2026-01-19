@@ -5,7 +5,7 @@ import { v2 as cloudinary } from "cloudinary";
 import axios from "axios";
 import FormData from "form-data";
 import fs from "fs";
-import pdf from "pdf-parse";
+import pdfParse from "pdf-parse";   // ✅ FIXED — Correct import
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
@@ -21,12 +21,12 @@ export const generateArticle = async (req, res) => {
 
     if (plan !== "premium" && free_usage >= 10) {
       return res.json({
-        success: true,
+        success: false,
         message: "Limit reached. Upgrade to continue",
       });
     }
 
-    await new Promise(resolve => setTimeout(resolve, 1200));
+    await new Promise((resolve) => setTimeout(resolve, 1200));
 
     const response = await groq.chat.completions.create({
       model: "llama-3.1-8b-instant",
@@ -65,12 +65,12 @@ export const generateBlogTitle = async (req, res) => {
 
     if (plan !== "premium" && free_usage >= 10) {
       return res.json({
-        success: true,
+        success: false,
         message: "Limit reached. Upgrade to continue",
       });
     }
 
-    await new Promise(resolve => setTimeout(resolve, 1200));
+    await new Promise((resolve) => setTimeout(resolve, 1200));
 
     const response = await groq.chat.completions.create({
       model: "llama-3.1-8b-instant",
@@ -99,7 +99,7 @@ export const generateBlogTitle = async (req, res) => {
   }
 };
 
-/* ================= IMAGE ================= */
+/* ================= IMAGE GENERATION ================= */
 export const generateImage = async (req, res) => {
   try {
     const { userId } = req.auth();
@@ -108,7 +108,7 @@ export const generateImage = async (req, res) => {
 
     if (plan !== "premium") {
       return res.json({
-        success: true,
+        success: false,
         message: "Limit reached. Upgrade to continue",
       });
     }
@@ -136,7 +136,9 @@ export const generateImage = async (req, res) => {
 
     await sql`
       INSERT INTO creations (user_id, prompt, content, type, publish)
-      VALUES (${userId}, ${prompt}, ${secure_url}, 'image', ${publish ?? false})
+      VALUES (${userId}, ${prompt}, ${secure_url}, 'image', ${
+      publish ?? false
+    })
     `;
 
     res.json({ success: true, content: secure_url });
@@ -166,7 +168,7 @@ export const removeImageBackground = async (req, res) => {
 
     await sql`
       INSERT INTO creations (user_id, prompt, content, type)
-      VALUES (${userId}, 'Remove background from image', ${secure_url}, 'image')
+      VALUES (${userId}, 'Remove background', ${secure_url}, 'image')
     `;
 
     res.json({ success: true, content: secure_url });
@@ -200,7 +202,7 @@ export const removeImageObject = async (req, res) => {
 
     await sql`
       INSERT INTO creations (user_id, prompt, content, type)
-      VALUES (${userId}, ${`Remove ${object} from image`}, ${imageUrl}, 'image')
+      VALUES (${userId}, ${`Remove ${object}`}, ${imageUrl}, 'image')
     `;
 
     res.json({ success: true, content: imageUrl });
@@ -232,10 +234,9 @@ export const resumeReview = async (req, res) => {
     }
 
     const dataBuffer = fs.readFileSync(resume.path);
-    const pdfData = await pdf(dataBuffer);
+    const pdfData = await pdfParse(dataBuffer);
 
-    const prompt = `Review the following resume and provide constructive feedback 
-    on its strengths, weaknesses, and areas for improvement.\n\n${pdfData.text}`;
+    const prompt = `Review this resume and provide feedback:\n\n${pdfData.text}`;
 
     const response = await groq.chat.completions.create({
       model: "llama-3.1-8b-instant",
@@ -248,7 +249,7 @@ export const resumeReview = async (req, res) => {
 
     await sql`
       INSERT INTO creations (user_id, prompt, content, type)
-      VALUES (${userId}, 'Review the uploaded resume', ${content}, 'resume-review')
+      VALUES (${userId}, 'Resume Review', ${content}, 'resume-review')
     `;
 
     res.json({ success: true, content });
