@@ -10,6 +10,7 @@ import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const pdfParse = require("pdf-parse");
 
+// Initialize Groq
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
@@ -18,15 +19,12 @@ const groq = new Groq({
 export const generateArticle = async (req, res) => {
   try {
     const { userId } = req.auth();
-    const { prompt, length } = req.body;
+    const { prompt } = req.body;
     const plan = req.plan;
     const free_usage = req.free_usage;
 
     if (plan !== "premium" && free_usage >= 10) {
-      return res.json({
-        success: false,
-        message: "Limit reached. Upgrade to continue",
-      });
+      return res.json({ success: false, message: "Limit reached. Upgrade to continue" });
     }
 
     await new Promise((resolve) => setTimeout(resolve, 1200));
@@ -53,7 +51,7 @@ export const generateArticle = async (req, res) => {
 
     res.json({ success: true, content });
   } catch (error) {
-    console.log("ERROR:", error);
+    console.log("ARTICLE ERROR:", error);
     res.json({ success: false, message: error.message });
   }
 };
@@ -67,10 +65,7 @@ export const generateBlogTitle = async (req, res) => {
     const free_usage = req.free_usage;
 
     if (plan !== "premium" && free_usage >= 10) {
-      return res.json({
-        success: false,
-        message: "Limit reached. Upgrade to continue",
-      });
+      return res.json({ success: false, message: "Limit reached. Upgrade to continue" });
     }
 
     await new Promise((resolve) => setTimeout(resolve, 1200));
@@ -97,7 +92,7 @@ export const generateBlogTitle = async (req, res) => {
 
     res.json({ success: true, content });
   } catch (error) {
-    console.log("ERROR:", error);
+    console.log("BLOG TITLE ERROR:", error);
     res.json({ success: false, message: error.message });
   }
 };
@@ -107,13 +102,9 @@ export const generateImage = async (req, res) => {
   try {
     const { userId } = req.auth();
     const { prompt, publish } = req.body;
-    const plan = req.plan;
 
-    if (plan !== "premium") {
-      return res.json({
-        success: false,
-        message: "Limit reached. Upgrade to continue",
-      });
+    if (req.plan !== "premium") {
+      return res.json({ success: false, message: "Premium Feature Only" });
     }
 
     const formData = new FormData();
@@ -131,22 +122,18 @@ export const generateImage = async (req, res) => {
       }
     );
 
-    const base64Image = `data:image/png;base64,${Buffer.from(
-      clipdropRes.data
-    ).toString("base64")}`;
+    const base64Image = `data:image/png;base64,${Buffer.from(clipdropRes.data).toString("base64")}`;
 
     const { secure_url } = await cloudinary.uploader.upload(base64Image);
 
     await sql`
       INSERT INTO creations (user_id, prompt, content, type, publish)
-      VALUES (${userId}, ${prompt}, ${secure_url}, 'image', ${
-      publish ?? false
-    })
+      VALUES (${userId}, ${prompt}, ${secure_url}, 'image', ${publish ?? false})
     `;
 
     res.json({ success: true, content: secure_url });
   } catch (error) {
-    console.log("ERROR:", error);
+    console.log("IMAGE ERROR:", error);
     res.json({ success: false, message: error.message });
   }
 };
@@ -155,28 +142,23 @@ export const generateImage = async (req, res) => {
 export const removeImageBackground = async (req, res) => {
   try {
     const { userId } = req.auth();
-    const image = req.file;
-    const plan = req.plan;
 
-    if (plan !== "premium") {
-      return res.json({
-        success: false,
-        message: "This feature is only available for premium subscriptions",
-      });
+    if (req.plan !== "premium") {
+      return res.json({ success: false, message: "Premium Feature Only" });
     }
 
-    const { secure_url } = await cloudinary.uploader.upload(image.path, {
+    const { secure_url } = await cloudinary.uploader.upload(req.file.path, {
       transformation: [{ effect: "background_removal" }],
     });
 
     await sql`
       INSERT INTO creations (user_id, prompt, content, type)
-      VALUES (${userId}, 'Remove background', ${secure_url}, 'image')
+      VALUES (${userId}, 'Remove Background', ${secure_url}, 'image')
     `;
 
     res.json({ success: true, content: secure_url });
   } catch (error) {
-    console.log("ERROR:", error);
+    console.log("BG REMOVE ERROR:", error);
     res.json({ success: false, message: error.message });
   }
 };
@@ -186,17 +168,12 @@ export const removeImageObject = async (req, res) => {
   try {
     const { userId } = req.auth();
     const { object } = req.body;
-    const image = req.file;
-    const plan = req.plan;
 
-    if (plan !== "premium") {
-      return res.json({
-        success: false,
-        message: "This feature is only available for premium subscriptions",
-      });
+    if (req.plan !== "premium") {
+      return res.json({ success: false, message: "Premium Feature Only" });
     }
 
-    const { public_id } = await cloudinary.uploader.upload(image.path);
+    const { public_id } = await cloudinary.uploader.upload(req.file.path);
 
     const imageUrl = cloudinary.url(public_id, {
       transformation: [{ effect: `gen_remove:${object}` }],
@@ -210,7 +187,7 @@ export const removeImageObject = async (req, res) => {
 
     res.json({ success: true, content: imageUrl });
   } catch (error) {
-    console.log("ERROR:", error);
+    console.log("REMOVE OBJECT ERROR:", error);
     res.json({ success: false, message: error.message });
   }
 };
@@ -219,27 +196,21 @@ export const removeImageObject = async (req, res) => {
 export const resumeReview = async (req, res) => {
   try {
     const { userId } = req.auth();
-    const resume = req.file;
-    const plan = req.plan;
 
-    if (plan !== "premium") {
-      return res.json({
-        success: false,
-        message: "This feature is only available for premium subscriptions",
-      });
+    if (req.plan !== "premium") {
+      return res.json({ success: false, message: "Premium Feature Only" });
     }
+
+    const resume = req.file;
 
     if (resume.size > 5 * 1024 * 1024) {
-      return res.json({
-        success: false,
-        message: "Resume file size exceeds allowed size (5MB).",
-      });
+      return res.json({ success: false, message: "Max 5MB allowed." });
     }
 
-    const dataBuffer = fs.readFileSync(resume.path);
-    const pdfData = await pdfParse(dataBuffer);
+    const buffer = fs.readFileSync(resume.path);
+    const pdfData = await pdfParse(buffer);
 
-    const prompt = `Review this resume and provide feedback:\n\n${pdfData.text}`;
+    const prompt = `Review this resume and provide improvements:\n\n${pdfData.text}`;
 
     const response = await groq.chat.completions.create({
       model: "llama-3.1-8b-instant",
@@ -257,7 +228,7 @@ export const resumeReview = async (req, res) => {
 
     res.json({ success: true, content });
   } catch (error) {
-    console.log("ERROR:", error);
+    console.log("RESUME ERROR:", error);
     res.json({ success: false, message: error.message });
   }
 };
