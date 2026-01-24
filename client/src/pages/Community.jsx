@@ -16,12 +16,9 @@ const Community = () => {
   /* ================== FETCH PUBLISHED CREATIONS ================== */
   const fetchCreations = async () => {
     try {
-      const { data } = await axios.get(
-        "/api/user/get-published-creations",
-        {
-          headers: { Authorization: `Bearer ${await getToken()}` },
-        }
-      );
+      const { data } = await axios.get("/api/user/get-published-creations", {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
 
       if (data.success) {
         setCreations(data.creations);
@@ -34,24 +31,8 @@ const Community = () => {
     setLoading(false);
   };
 
-  const imageLikeToggle = async(id)=>{
-    try{
-      const {data} = await axios.post('/api/user/toggle-like-creation',{id},{
-        headers : {Authorization: `Bearer ${await getToken()}`}
-      })
-      if(data.success){
-        toast.success(data.message)
-        await fetchCreations()
-      }else{
-        toast.error(data.message)
-      }
-    }catch (error){
-      toast.error(error.message)
-    }
-  }
-
-  /* ================== LIKE / UNLIKE CREATION ================== */
-  const toggleLike = async (id) => {
+  /* ================== LIKE / UNLIKE IMAGE ================== */
+  const imageLikeToggle = async (id) => {
     try {
       const { data } = await axios.post(
         "/api/user/toggle-like-creations",
@@ -62,7 +43,8 @@ const Community = () => {
       );
 
       if (data.success) {
-        fetchCreations(); // refresh list
+        toast.success(data.message);
+        fetchCreations(); // refresh
       } else {
         toast.error(data.message);
       }
@@ -78,14 +60,12 @@ const Community = () => {
     }
   }, [user]);
 
-  return  !loading ?(
+  return !loading ? (
     <div className="flex-1 h-full flex flex-col gap-4 p-6">
       <h1 className="text-xl font-semibold">Community Creations</h1>
 
       <div className="bg-white h-full w-full rounded-xl overflow-y-scroll p-3 flex flex-wrap gap-4">
-        {loading ? (
-          <p className="text-gray-500 text-sm">Loading...</p>
-        ) : creations.length === 0 ? (
+        {creations.length === 0 ? (
           <p className="text-gray-500 text-sm">No images published yet</p>
         ) : (
           creations.map((creation, index) => (
@@ -114,7 +94,8 @@ const Community = () => {
                 <div className="flex gap-1 items-center text-white">
                   <p>{creation.likes.length}</p>
 
-                  <Heart onClick={()=> imageLikeToggle(creation.id)}
+                  <Heart
+                    onClick={() => imageLikeToggle(creation.id)}
                     className={`min-w-5 h-5 hover:scale-110 cursor-pointer ${
                       creation.likes.includes(user?.id)
                         ? "fill-red-500 text-red-600"
@@ -129,12 +110,11 @@ const Community = () => {
       </div>
     </div>
   ) : (
-    <div className="flex justofy-center items-center h-full">
-<span className="w-10 h-1 my-1 rounded-full norder-3
-border-primary border-t-transparent animate-spin"></span>
+    // LOADING SCREEN
+    <div className="flex justify-center items-center h-full">
+      <span className="w-10 h-10 rounded-full border-4 border-gray-300 border-t-transparent animate-spin"></span>
     </div>
-    
-  )
+  );
 };
 
 export default Community;
