@@ -13,8 +13,11 @@ import GenerateImages from './pages/GenerateImages';
 import RemoveBackground from './pages/RemoveBackground';
 import { Toaster } from 'react-hot-toast';
 
+
+
 const App = () => {
   return (
+    
     <>
       {/* Toast must be OUTSIDE Routes */}
       <Toaster />
