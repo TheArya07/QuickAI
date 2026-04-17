@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
+  
   "dependencies": {
     "@clerk/clerk-react": "^5.58.1",
     "@clerk/nextjs": "^6.36.2",
