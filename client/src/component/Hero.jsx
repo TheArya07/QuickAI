@@ -56,6 +56,9 @@ const Hero = () => {
               bg-primary 
               text-white 
               px-10 
+
+
+              
               py-3 
               rounded-lg 
               hover:scale-105 
