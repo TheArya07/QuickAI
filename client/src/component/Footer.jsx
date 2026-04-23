@@ -33,6 +33,9 @@ const Footer = () => {
             </ul>
           </div>
 
+
+
+
           {/* Newsletter */}
           <div>
             <h2 className="font-semibold text-gray-800 mb-5">Subscribe to our newsletter</h2>
