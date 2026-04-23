@@ -2,6 +2,8 @@ import { assets } from "../assets/assets"
 
 const Testimonial = () => {
     const dummyTestimonialData = [
+
+        
         {
             image: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200",
             name: 'Aryan Kumar',
@@ -26,6 +28,9 @@ const Testimonial = () => {
     ]
 
     return (
+
+
+
         <div className='px-4 sm:px-20 xl:px-32 py-24'>
             <div className='text-center'>
                 <h2 className='text-slate-700 text-[42px] font-semibold'>Loved by Creators</h2>
