@@ -22,6 +22,9 @@ const Testimonial = () => {
             image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200&h=200&auto=format&fit=crop",
             name: 'Nitika Kumari',
             title: 'Content Writer, TechCorp',
+
+
+            
             content: 'ContentAI has transformed our content creation process. The AI tools have helped us produce high-quality content faster than ever before.',
             rating: 4,
         },
